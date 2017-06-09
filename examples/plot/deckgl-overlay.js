@@ -3,6 +3,11 @@ import React, {Component} from 'react';
 import PlotLayer from './plot-layer';
 import DeckGL from 'deck.gl';
 import OrbitController from './orbit-controller';
+import {scaleLinear} from 'd3-scale';
+
+function getScale({min, max}) {
+  return scaleLinear().domain([min, max]).range([0, 1]);
+}
 
 export default class DeckGLOverlay extends Component {
 
@@ -16,22 +21,25 @@ export default class DeckGLOverlay extends Component {
 
     const layers = equation ? [
       new PlotLayer({
-        getZ: equation,
+        getPosition: (u, v) => {
+          const x = (u - 1 / 2) * Math.PI * 2;
+          const y = (v - 1 / 2) * Math.PI * 2;
+          return [x, y, equation(x, y)];
+        },
         getColor: (x, y, z) => [40, z * 128 + 128, 160],
-        xMin: -Math.PI,
-        xMax: Math.PI,
-        yMin: -Math.PI,
-        yMax: Math.PI,
-        xResolution: resolution,
-        yResolution: resolution,
+        getXScale: getScale,
+        getYScale: getScale,
+        getZScale: getScale,
+        uCount: resolution,
+        vCount: resolution,
         drawAxes: showAxis,
-        axesOffset: 0.25,
+        axesPadding: 0.25,
         axesColor: [0, 0, 0, 128],
         opacity: 1,
         pickable: Boolean(this.props.onHover),
         onHover: this.props.onHover,
         updateTriggers: {
-          getZ: equation
+          getPosition: equation
         }
       })
     ] : [];

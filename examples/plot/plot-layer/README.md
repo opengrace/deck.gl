@@ -9,11 +9,15 @@ It can also render axes and labels around the surface. (requires `d3-scale` modu
 Inherits from all [Base Layer](/docs/layers/base-layer.md) properties.
 
 
-##### `getZ` (Function, optional)
+##### `getPosition` (Function, optional)
 
-- Default: `(x, y) => 0`
+- Default: `(u, v) => [0, 0, 0]`
 
-Called to get the `z` value from a `(x, y)` pair.
+Called to get the `[x, y, z]` value from a `(u, v)` pair.
+
+Arguments:
+- `u` (Number) - a value between `[0, 1]`
+- `v` (Number) - a value between `[0, 1]`
 
 ##### `getColor` (Function, optional)
 
@@ -23,45 +27,58 @@ Called for each `(x, y, z)` triplet to retreive surface color.
 Returns an array in the form of `[r, g, b, a]`.
 If the alpha component is not supplied, it is default to `255`.
 
-##### `xMin` (Number, optional)
+##### `getXScale` (Function, optional)
 
-- Default: `-1`
+- Default: `({min, max}) => d3.scaleLinear()`
 
-Lower bound of the `x` range.
+Called to retreive a [d3 scale](https://github.com/d3/d3-scale/blob/master/README.md) for x values.
+Default to identity.
 
-##### `xMax` (Number, optional)
+Arguments:
+- `context` (Object)
+  + `context.min` (Number) - lower bounds of x values
+  + `context.max` (Number) - upper bounds of x values
 
-- Default: `1`
+##### `getYScale` (Function, optional)
 
-Upper bound of the `x` range.
+- Default: `({min, max}) => d3.scaleLinear()`
 
-##### `yMin` (Number, optional)
+Called to retreive a [d3 scale](https://github.com/d3/d3-scale/blob/master/README.md) for y values.
+Default to identity.
 
-- Default: `-1`
+Arguments:
+- `context` (Object)
+  + `context.min` (Number) - lower bounds of y values
+  + `context.max` (Number) - upper bounds of y values
 
-Lower bound of the `y` range.
+##### `getZScale` (Function, optional)
 
-##### `yMax` (Number, optional)
+- Default: `({min, max}) => d3.scaleLinear()`
 
-- Default: `1`
+Called to retreive a [d3 scale](https://github.com/d3/d3-scale/blob/master/README.md) for z values.
+Default to identity.
 
-Upper bound of the `y` range.
+Arguments:
+- `context` (Object)
+  + `context.min` (Number) - lower bounds of z values
+  + `context.max` (Number) - upper bounds of z values
 
-##### `xResolution` (Number, optional)
+##### `uCount` (Number, optional)
 
 - Default: `100`
 
-Number of points to sample in the `x` range.
+Number of points to sample `u` in the `[0, 1]` range.
 
-##### `yResolution` (Number, optional)
+##### `vCount` (Number, optional)
 
 - Default: `100`
 
-Number of points to sample in the `y` range.
+Number of points to sample `v` in the `[0, 1]` range.
+
 
 ##### `lightStrength` (Number, optional)
 
-- Default: `1`
+- Default: `0.1`
 
 Intensity of the front-lit effect for the 3d surface.
 
@@ -73,18 +90,66 @@ Whether to draw axis grids and labels.
 
 ##### `fontSize` (Number, optional)
 
-- Default: `24`
+- Default: `12`
 
 Font size of the labels.
 
-##### `ticksCount` (Number, optional)
+##### `xTicks` (Number | [Number], optional)
 
 - Default: `6`
 
-Number of ticks on each axis.
-For details, see [d3.scale.ticks](https://github.com/d3/d3-axis/blob/master/README.md#axis_ticks).
+Either number of ticks on x axis, or an array of tick values.
 
-##### `axesOffset` (Number, optional)
+##### `yTicks` (Number | [Number], optional)
+
+- Default: `6`
+
+Either number of ticks on y axis, or an array of tick values.
+
+##### `zTicks` (Number | [Number], optional)
+
+- Default: `6`
+
+Either number of ticks on z axis, or an array of tick values.
+
+
+##### `xTickFormat` (Function, optional)
+
+- Default: `value => value.toFixed(2)`
+
+Format a tick value on x axis to text string.
+
+##### `yTickFormat` (Function, optional)
+
+- Default: `value => value.toFixed(2)`
+
+Format a tick value on y axis to text string.
+
+##### `zTickFormat` (Function, optional)
+
+- Default: `value => value.toFixed(2)`
+
+Format a tick value on z axis to text string.
+
+##### `xTitle` (String, optional)
+
+- Default: `x`
+
+X axis title string.
+
+##### `yTitle` (String, optional)
+
+- Default: `y`
+
+Y axis title string.
+
+##### `zTitle` (String, optional)
+
+- Default: `z`
+
+Z axis title string.
+
+##### `axesPadding` (Number, optional)
 
 - Default: `0`
 
